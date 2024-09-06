@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace String.Demo.ConsoleApp;
 
 using System;
@@ -15,6 +17,7 @@ class Program
             Console.WriteLine(e);
         }
     }
+
     public void Run(string[] args)
     {
         unsafe
@@ -39,7 +42,6 @@ class Program
             Console.WriteLine($"*&{nameof(string0)}: 0x{(long)*(void**)&string0:x16}");
             Console.WriteLine($"*&{nameof(string1)}: 0x{(long)*(void**)&string1:x16}");
             Console.WriteLine($"*&{nameof(string2)}: 0x{(long)*(void**)&string2:x16}");
-
             Console.WriteLine();
 
             /* string0 and string1 have different addresses on the stack
@@ -52,6 +54,37 @@ class Program
 
             Console.WriteLine($"*&{nameof(string0)}: 0x{(long)*(void**)&string0:x16}");
             Console.WriteLine($"*&{nameof(string1)}: 0x{(long)*(void**)&string1:x16}");
+            Console.WriteLine();
+
+            /* string2 is reallocated on the heap each time a character
+             * is concatenated.
+             */
+            for (int k = 0; k < 10; k++)
+            {
+                string2 = string2 + '!';
+                Console.WriteLine($"*&{nameof(string2)}: 0x{(long)*(void**)&string2:x16}");
+            }
+            Console.WriteLine();
+
+            var sb = new StringBuilder(string1);
+            long addressOfSbOnHeap;
+            Console.WriteLine($" &{nameof(sb)}: 0x{(long)&sb:x16}");
+            addressOfSbOnHeap = (long) *(void**) &sb;
+            Console.WriteLine($"*&{nameof(sb)}: 0x{addressOfSbOnHeap:x16}");
+            Console.WriteLine($"*&{nameof(sb)}.m_ChunkChars: 0x{((long)*(void**)(addressOfSbOnHeap + sizeof(IntPtr))) :x16}");
+            Console.WriteLine($"*&{nameof(sb)}.m_ChunkPrevious: 0x{((long)*(void**)(addressOfSbOnHeap + 2 * sizeof(IntPtr))) :x16}");
+            for (int k = 0; k < 10; k++)
+            {
+                sb.Append('!');
+
+                Console.WriteLine($"===== AFTER APPEND #{k} =====");
+                Console.WriteLine($" &{nameof(sb)}: 0x{(long)&sb:x16}");
+                addressOfSbOnHeap = (long)*(void**)&sb;
+                Console.WriteLine($"*&{nameof(sb)}: 0x{addressOfSbOnHeap:x16}");
+                Console.WriteLine($"*&{nameof(sb)}.m_ChunkChars: 0x{((long)*(void**)(addressOfSbOnHeap + sizeof(IntPtr))):x16}");
+                Console.WriteLine($"*&{nameof(sb)}.m_ChunkPrevious: 0x{((long)*(void**)(addressOfSbOnHeap + 2 * sizeof(IntPtr))):x16}");
+            }
+            Console.WriteLine();
         }
-    }
+    } 
 }
