@@ -68,6 +68,7 @@ class Program
 
             var sb = new StringBuilder(string1);
             long addressOfSbOnHeap;
+            long addressOfm_ChunkPrevious;
             Console.WriteLine($" &{nameof(sb)}: 0x{(long)&sb:x16}");
             addressOfSbOnHeap = (long) *(void**) &sb;
             Console.WriteLine($"*&{nameof(sb)}: 0x{addressOfSbOnHeap:x16}");
@@ -81,8 +82,15 @@ class Program
                 Console.WriteLine($" &{nameof(sb)}: 0x{(long)&sb:x16}");
                 addressOfSbOnHeap = (long)*(void**)&sb;
                 Console.WriteLine($"*&{nameof(sb)}: 0x{addressOfSbOnHeap:x16}");
-                Console.WriteLine($"*&{nameof(sb)}.m_ChunkChars: 0x{((long)*(void**)(addressOfSbOnHeap + sizeof(IntPtr))):x16}");
-                Console.WriteLine($"*&{nameof(sb)}.m_ChunkPrevious: 0x{((long)*(void**)(addressOfSbOnHeap + 2 * sizeof(IntPtr))):x16}");
+                string indent = string.Empty;
+                while (addressOfSbOnHeap != 0)
+                {
+                    Console.WriteLine($"{indent}*&{nameof(sb)}.m_ChunkChars: 0x{((long) *(void**) (addressOfSbOnHeap + sizeof(IntPtr))):x16}");
+                    addressOfm_ChunkPrevious = (long) *(void**) (addressOfSbOnHeap + 2 * sizeof(IntPtr));
+                    Console.WriteLine($"{indent}*&{nameof(sb)}.m_ChunkPrevious: 0x{addressOfm_ChunkPrevious:x16}");
+                    addressOfSbOnHeap = addressOfm_ChunkPrevious;
+                    indent += "  ";
+                }
             }
             Console.WriteLine();
         }
