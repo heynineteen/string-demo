@@ -161,6 +161,10 @@ class Program
 
     private void DemoStringLock()
     {
+        Console.WriteLine("================");
+        Console.WriteLine("DemoStringLock()");
+        Console.WriteLine("================");
+
         var str = "Hello World!";
         lock (str)
         {
@@ -168,5 +172,8 @@ class Program
         }
 
         Console.WriteLine("Exited lock.");
+
+        Console.WriteLine("==========");
+        Console.WriteLine();
     }
 }
