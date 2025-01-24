@@ -24,6 +24,7 @@ class Program
         DemoString();
         DemoStringBuilder();
         DemoBstr();
+        DemoStringLock();
     }
 
     public void DemoString()
@@ -156,5 +157,16 @@ class Program
 
         Console.WriteLine("==========");
         Console.WriteLine();
+    }
+
+    private void DemoStringLock()
+    {
+        var str = "Hello World!";
+        lock (str)
+        {
+            Console.WriteLine("Entered lock.");
+        }
+
+        Console.WriteLine("Exited lock.");
     }
 }
