@@ -1,9 +1,8 @@
 using System.Text;
-
-namespace String.Demo.ConsoleApp;
-
 using System;
 using System.Runtime.InteropServices;
+
+namespace String.Demo.ConsoleApp;
 
 class Program
 {
@@ -35,12 +34,11 @@ class Program
             Console.WriteLine("DemoString()");
             Console.WriteLine("============");
 
-            /* string0 and string1 have different addresses on the stack
-             * but point to the same object on the heap.
-             *
-             * string2 points to a different object on the heap because
-             * it is a reference to a string literal.
-             */
+            // string0 and string1 have different addresses on the stack
+            // but point to the same object on the heap.
+            // 
+            // string2 points to a different object on the heap because
+            // it is a reference to a string literal.
             ulong i = ulong.MaxValue;
             var string0 = new string("Hello World!");
             // string1[0] = 'h';
@@ -57,9 +55,8 @@ class Program
             Console.WriteLine($"*&{nameof(string2)}: 0x{(long)*(void**)&string2:x16}");
             Console.WriteLine();
 
-            /* string0 and string1 have different addresses on the stack
-             * and point to different objects on the heap.
-             */
+            // string0 and string1 have different addresses on the stack
+            // and point to different objects on the heap.
             string1 = string1.ToLower();
 
             Console.WriteLine($" &{nameof(string0)}: 0x{(long)&string0:x16}");
@@ -69,9 +66,8 @@ class Program
             Console.WriteLine($"*&{nameof(string1)}: 0x{(long)*(void**)&string1:x16}");
             Console.WriteLine();
 
-            /* string2 is reallocated on the heap each time a character
-             * is concatenated.
-             */
+            // string2 is reallocated on the heap each time a character
+            // is concatenated.
             for (int k = 0; k < 10; k++)
             {
                 string2 = string2 + '!';
